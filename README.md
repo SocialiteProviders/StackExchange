@@ -41,11 +41,13 @@ composer require socialiteproviders/stackexchange
 #### Add to `config/services.php`.  
  
 ```php
-'stackexchange' => [
-    'client_id' => env('STACKEXCHANGE_KEY'),
-    'client_secret' => env('STACKEXCHANGE_SECRET'),
-    'redirect' => env('STACKEXCHANGE_REDIRECT_URI'),
-],
+    'stackexchange' => [
+        'client_id' => env('STACKEXCHANGE_CLIENT_ID'),
+        'client_secret' => env('STACKEXCHANGE_SECRET'),
+        'redirect' => env('STACKEXCHANGE_REDIRECT_URI'),
+        'key' => env('STACKEXCHANGE_KEY'),
+        'site' => env('STACKEXCHANGE_SITE'),
+    ],
 ```
 
 #### Append provider values to your `.env` file
@@ -53,12 +55,15 @@ composer require socialiteproviders/stackexchange
 ```php
 // other values above
 STACKEXCHANGE_KEY=yourkeyfortheservice
+STACKEXCHANGE_CLIENT_ID=1234
 STACKEXCHANGE_SECRET=yoursecretfortheservice
-STACKEXCHANGE_REDIRECT_URI=https://example.com/login
+STACKEXCHANGE_REDIRECT_URI=https://example.com/login/
+STACKEXCHANGE_SITE=stackoverflow
 ```
 
 * [See the main docs for more information](https://github.com/SocialiteProviders/Manager#4-services-array-and-env)
-
+* To figure out the string for `site`, you can visit [this link](https://api.stackexchange.com/docs/sites), click on run, and then look for the `api_site_parameter` field
+* **You must have a trailing slash* when passing and setting the `redirect_uri`.
 
 ## Usage
 

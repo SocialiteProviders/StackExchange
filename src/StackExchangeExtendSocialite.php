@@ -3,9 +3,10 @@ namespace SocialiteProviders\StackExchange;
 
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
-class StackExchangeExtendSocialite {
+class StackExchangeExtendSocialite
+{
     public function handle(SocialiteWasCalled $socialiteWasCalled)
     {
-        $socialiteWasCalled->extendSocialite('stackexchange', __NAMESPACE__ . '\Provider');
+        $socialiteWasCalled->extendSocialite('stackexchange', __NAMESPACE__.'\Provider');
     }
 }

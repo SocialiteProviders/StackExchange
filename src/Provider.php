@@ -10,7 +10,8 @@ use Laravel\Socialite\Two\User;
  * Class Provider
  * @package SocialiteProviders\StackExchange
  */
-class Provider extends AbstractProvider implements ProviderInterface {
+class Provider extends AbstractProvider implements ProviderInterface
+{
 
     protected $version = '2.2';
 
@@ -20,6 +21,28 @@ class Provider extends AbstractProvider implements ProviderInterface {
     protected function getAuthUrl($state)
     {
         return $this->buildAuthUrlFromBase('https://stackexchange.com/oauth', $state);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function buildAuthUrlFromBase($url, $state)
+    {
+        // https://api.stackexchange.com/docs/authentication
+
+        $session = $this->request->getSession();
+
+        return $url.'?'.http_build_query(
+            [
+                'client_id' => $this->clientId,
+                'redirect_uri' => $this->redirectUrl,
+                'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
+                'state' => $state,
+            ],
+            '',
+            '&',
+            $this->encodingType
+        );
     }
 
     /**
@@ -37,7 +60,14 @@ class Provider extends AbstractProvider implements ProviderInterface {
     {
         // https://api.stackexchange.com/docs/me
         $response = $this->getHttpClient()->get(
-            'https://api.stackexchange.com/' . $this->version . '/me?access_token=' . $token,
+            'https://api.stackexchange.com/'.$this->version.
+            '/me?'.http_build_query(
+                [
+                    'site' => $this->getFromConfig('site'),
+                    'access_token' => $token,
+                    'key' => $this->getFromConfig('key')
+                ]
+            ),
             [
                 'headers' => [
                     'Accept' => 'application/json',
@@ -49,15 +79,35 @@ class Provider extends AbstractProvider implements ProviderInterface {
     }
 
     /**
+     * @param string $arrayKey
+     */
+    protected function getFromConfig($arrayKey)
+    {
+        return app()['config']['services.stackexchange'][$arrayKey];
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function mapUserToObject(array $user)
     {
-        return (new User)->setRaw($user)->map([
-            'id' => $user['items']['user_id'],
-            'nickname' => $user['items']['display_name'],
-            'name' => $user['items']['display_name'],
-            'avatar' => $user['items']['profile_image'],
-        ]);
+        return (new User)->setRaw($user)->map(
+            [
+                'id' => $user['items'][0]['account_id'],
+                'nickname' => $user['items'][0]['display_name'],
+                'name' => $user['items'][0]['display_name'],
+                'avatar' => $user['items'][0]['profile_image'],
+            ]
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function parseAccessToken($body)
+    {
+        parse_str($body, $data);
+
+        return $data['access_token'];
     }
 }
