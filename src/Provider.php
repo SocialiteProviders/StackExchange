@@ -33,10 +33,10 @@ class Provider extends AbstractProvider implements ProviderInterface
 
         return $url.'?'.http_build_query(
             [
-                'client_id'    => $this->clientId,
+                'client_id' => $this->clientId,
                 'redirect_uri' => $this->redirectUrl,
-                'scope'        => $this->formatScopes($this->scopes, $this->scopeSeparator),
-                'state'        => $state,
+                'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
+                'state' => $state,
             ],
             '',
             '&',
@@ -62,9 +62,9 @@ class Provider extends AbstractProvider implements ProviderInterface
             'https://api.stackexchange.com/'.$this->version.
             '/me?'.http_build_query(
                 [
-                    'site'         => $this->getFromConfig('site'),
+                    'site' => $this->getFromConfig('site'),
                     'access_token' => $token,
-                    'key'          => $this->getFromConfig('key'),
+                    'key' => $this->getFromConfig('key'),
                 ]
             ),
             [
@@ -92,10 +92,10 @@ class Provider extends AbstractProvider implements ProviderInterface
     {
         return (new User())->setRaw($user)->map(
             [
-                'id'       => $user['items'][0]['account_id'],
+                'id' => $user['items'][0]['account_id'],
                 'nickname' => $user['items'][0]['display_name'],
-                'name'     => $user['items'][0]['display_name'],
-                'avatar'   => $user['items'][0]['profile_image'],
+                'name' => $user['items'][0]['display_name'],
+                'avatar' => $user['items'][0]['profile_image'],
             ]
         );
     }
