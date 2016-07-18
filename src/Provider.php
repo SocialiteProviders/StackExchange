@@ -119,14 +119,4 @@ class Provider extends AbstractProvider implements ProviderInterface
             ]
         );
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function parseAccessToken($body)
-    {
-        parse_str($body, $data);
-
-        return $data['access_token'];
-    }
 }
