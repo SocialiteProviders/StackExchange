@@ -70,7 +70,7 @@ class Provider extends AbstractProvider implements ProviderInterface
         parse_str($response->getBody()->getContents(), $data);
 
         return $data;
-    }    
+    }
 
     /**
      * {@inheritdoc}
