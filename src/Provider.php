@@ -60,6 +60,21 @@ class Provider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function getAccessTokenResponse($code)
+    {
+        $response = $this->getHttpClient()->post($this->getTokenUrl(), [
+            'headers' => ['Accept' => 'application/json'],
+            'form_params' => $this->getTokenFields($code),
+        ]);
+
+        parse_str($response->getBody()->getContents(), $data);
+
+        return $data;
+    }    
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getUserByToken($token)
     {
         // https://api.stackexchange.com/docs/me
@@ -103,15 +118,5 @@ class Provider extends AbstractProvider implements ProviderInterface
                 'avatar' => $user['items'][0]['profile_image'],
             ]
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function parseAccessToken($body)
-    {
-        parse_str($body, $data);
-
-        return $data['access_token'];
     }
 }
